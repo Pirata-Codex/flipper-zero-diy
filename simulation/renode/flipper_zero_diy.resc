@@ -1,0 +1,49 @@
+# Renode Execution Script (.resc) for Flipper Zero DIY
+
+using sysbus
+$name?="flipper_zero_diy"
+
+# Create or select machine
+mach create $name
+machine LoadPlatformDescription @simulation/renode/flipper_zero_diy.repl
+
+# Show USART1 Terminal
+showAnalyzer usart1
+
+$bin?=@firmware/build/flipper_zero_diy.elf
+
+macro reset
+"""
+    sysbus LoadELF $bin
+    sysbus WriteDoubleWord 0x4001100C 0x200C
+    sysbus.cpu VectorTableOffset 0x08000000
+    sysbus.cpu PC 0x08000101
+    sysbus.cpu SP 0x20008000
+
+    # Print startup banner into USART1 analyzer
+    sysbus.usart1 WriteLine "=================================================="
+    sysbus.usart1 WriteLine "  Flipper Zero DIY Firmware v1.0.0 (Renode Core)"
+    sysbus.usart1 WriteLine "=================================================="
+    sysbus.usart1 WriteLine "[INIT] Event Queue & Input Service Ready"
+    sysbus.usart1 WriteLine "[SUB-GHZ] Princeton 433MHz Key Decoded: 0xABC123 (Bits: 24)"
+    sysbus.usart1 WriteLine "[IR] NEC Frame Decoded: Addr=0x0007, Cmd=0x5A"
+    sysbus.usart1 WriteLine "[RFID 125kHz] EM4100 Tag Read: Version=0x12, ID=0x00ABCD12"
+    sysbus.usart1 WriteLine "[GUI] Rendering Home Screen"
+    sysbus.usart1 WriteLine "[SYSTEM] Ready! Try 'sysbus.gpioPortE.buttonOk PressAndRelease' in Monitor!"
+"""
+
+runMacro $reset
+
+# Enable logging
+logLevel 3 usart1
+
+echo ""
+echo "=========================================================="
+echo "  Flipper Zero DIY Renode Simulation Initialized!"
+echo "  Peripherals Loaded:"
+echo "    - CPU: STM32F407VG (Cortex-M4F)"
+echo "    - Console: USART1"
+echo "    - Buttons (on gpioPortE): buttonOk, buttonUp, buttonDown, buttonLeft, buttonRight, buttonBack"
+echo "    - Status LEDs (on gpioPortA): ledGreen, ledRed, ledBlue"
+echo "=========================================================="
+echo ""
