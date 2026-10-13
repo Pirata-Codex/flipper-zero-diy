@@ -1,0 +1,32 @@
+// Flipper Zero DIY - Renode Platform Description (.repl)
+// Target MCU: STM32F407VGT6 (ARM Cortex-M4F)
+
+using "platforms/cpus/stm32f4.repl"
+
+// Flash alias at 0x00000000 for Cortex-M4 vector table boot
+flashAlias: Memory.MappedMemory @ sysbus 0x00000000
+    size: 0x100000
+
+// ----------------------------------------------------------------------------
+// User Input Buttons (5-way D-Pad + Back)
+// ----------------------------------------------------------------------------
+buttonUp: Miscellaneous.Button @ gpioPortE 0
+
+buttonDown: Miscellaneous.Button @ gpioPortE 1
+
+buttonLeft: Miscellaneous.Button @ gpioPortE 2
+
+buttonRight: Miscellaneous.Button @ gpioPortE 3
+
+buttonOk: Miscellaneous.Button @ gpioPortE 4
+
+buttonBack: Miscellaneous.Button @ gpioPortE 5
+
+// ----------------------------------------------------------------------------
+// Status LEDs
+// ----------------------------------------------------------------------------
+ledGreen: Miscellaneous.LED @ gpioPortA 8
+
+ledRed: Miscellaneous.LED @ gpioPortA 9
+
+ledBlue: Miscellaneous.LED @ gpioPortA 10

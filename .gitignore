@@ -1,0 +1,6 @@
+.idea/
+firmware/build/
+*.pyc
+__pycache__/
+uart_output.txt
+run_unit_tests.exe
